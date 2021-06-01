@@ -5,9 +5,16 @@ const userSchema = new Schema(
   {
     username: {
       type: String,
-      // unique: true -> Ideally, should be unique, but its up to you
+      unique: true,
+      required: true,
     },
-    password: String,
+    password: {
+      type: String,
+      required: true,
+    },
+    favouriteRestaurants: [{ type: Schema.Types.ObjectId, ref: "Retaurant" }],
+    history: [{ type: Schema.Types.ObjectId, ref: "Meal" }],
+    userImage: String,
   },
   {
     timestamps: true,
