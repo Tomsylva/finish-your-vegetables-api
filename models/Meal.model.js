@@ -18,8 +18,8 @@ const mealSchema = new Schema({
   },
   mealType: {
     type: String,
-    default: "With Meat",
-    enum: ["With Meat", "Vegetarian", "Vegan"],
+    default: "meat",
+    enum: ["meat", "vegetarian", "vegan"],
   },
   reserved: {
     type: Boolean,

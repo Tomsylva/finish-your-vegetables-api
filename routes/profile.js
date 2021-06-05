@@ -37,7 +37,7 @@ router.post("/add-restaurant", isLoggedIn, (req, res) => {
       res.json(response);
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
 });
 
