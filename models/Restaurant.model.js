@@ -12,7 +12,8 @@ const restaurantSchema = new Schema({
   },
   image: {
     type: String,
-    // default: SOMETHING
+    default:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSA5Cf20HBBaTzJgCw3uNCXpFLc4ujI_tIghw&usqp=CAU",
   },
   meals: [{ type: Schema.Types.ObjectId, ref: "Meal" }],
   contact: {

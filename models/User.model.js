@@ -14,7 +14,11 @@ const userSchema = new Schema(
     },
     favouriteRestaurants: [{ type: Schema.Types.ObjectId, ref: "Retaurant" }],
     history: [{ type: Schema.Types.ObjectId, ref: "Meal" }],
-    userImage: String,
+    userImage: {
+      type: String,
+      default:
+        "https://www.alimentarium.org/en/system/files/thumbnails/image/AL012-02%20carotte.jpg",
+    },
   },
   {
     timestamps: true,
