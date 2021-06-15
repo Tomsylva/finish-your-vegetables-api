@@ -63,6 +63,7 @@ router.post("/meal", isLoggedIn, (req, res) => {
     });
 });
 
+//UPDATES CURRENT RESTAURANT
 router.put("/:restaurantId", isLoggedIn, (req, res) => {
   const { restaurantName, description, otherInfo, location } = req.body;
   const accessToken = req.headers.authorization;

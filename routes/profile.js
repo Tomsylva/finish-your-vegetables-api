@@ -4,6 +4,7 @@ const Session = require("../models/Session.model");
 const Restaurant = require("../models/Restaurant.model");
 const isLoggedIn = require("../middleware/isLoggedIn");
 const upload = require("../middleware/cloudinary");
+const Meal = require("../models/Meal.model");
 
 router.put("/update", isLoggedIn, upload.single("userImage"), (req, res) => {
   const { username, userId } = req.body;
@@ -40,8 +41,12 @@ router.post("/add-restaurant", isLoggedIn, (req, res) => {
 router.delete("/delete", isLoggedIn, (req, res) => {
   Session.findByIdAndDelete(req.headers.authorization)
     .then((data) => {
-      User.findByIdAndDelete(data.user).then(() => {
-        res.json({ success: true });
+      Restaurant.remove({ owner: data.user }).then(() => {
+        Meal.remove({ reservedBy: data.user }).then(() => {
+          User.findByIdAndDelete(data.user).then(() => {
+            res.json({ success: true });
+          });
+        });
       });
       /*res.status(200).json({ message: "User was logged out" });*/
     })
