@@ -4,11 +4,34 @@ const isLoggedIn = require("../middleware/isLoggedIn");
 const Session = require("../models/Session.model");
 const User = require("../models/User.model");
 
+//DISPLAYS ALL MEALS
+router.get("/showAll", (req, res) => {
+  Meal.find({})
+    .then((allMeals) => {
+      res.json(allMeals);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+});
+
+//DISPLAYS SINGLE MEAL PAGE
 router.get("/:mealId", (req, res) => {
   Meal.findById(req.params.mealId)
     .populate("reservedBy")
     .then((foundMeal) => {
       res.json(foundMeal);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+});
+
+//COLLECT MEAL
+router.get("/:userId/collect", (req, res) => {
+  User.findById(req.params.userId)
+    .then((foundUser) => {
+      res.json(foundUser);
     })
     .catch((err) => {
       console.error(err);
