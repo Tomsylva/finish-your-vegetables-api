@@ -32,6 +32,10 @@ const mealSchema = new Schema({
   price: {
     type: Number,
   },
+  orderCompleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const Meal = model("Meal", mealSchema);

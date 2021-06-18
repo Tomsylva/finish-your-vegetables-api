@@ -32,6 +32,7 @@ const restaurantSchema = new Schema({
     type: String, //MAPBOX - MODIFY LATER
     required: true,
   },
+  completedOrders: [{ type: Schema.Types.ObjectId, ref: "Meal" }],
 });
 
 const Restaurant = model("Restaurant", restaurantSchema);

@@ -14,6 +14,7 @@ const userSchema = new Schema(
     },
     favouriteRestaurants: [{ type: Schema.Types.ObjectId, ref: "Retaurant" }],
     history: [{ type: Schema.Types.ObjectId, ref: "Meal" }],
+    completedHistory: [{ type: Schema.Types.ObjectId, ref: "Meal" }],
     userImage: {
       type: String,
       default:

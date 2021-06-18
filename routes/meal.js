@@ -3,6 +3,7 @@ const Meal = require("../models/Meal.model");
 const isLoggedIn = require("../middleware/isLoggedIn");
 const Session = require("../models/Session.model");
 const User = require("../models/User.model");
+const Restaurant = require("../models/Restaurant.model");
 
 //DISPLAYS ALL MEALS
 router.get("/showAll", (req, res) => {
@@ -29,6 +30,17 @@ router.get("/:mealId", (req, res) => {
 
 //COLLECT MEAL
 router.get("/:userId/collect", (req, res) => {
+  User.findById(req.params.userId)
+    .then((foundUser) => {
+      res.json(foundUser);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+});
+
+//SHOWS ORDER DATA
+router.get("/:userId/completed", (req, res) => {
   User.findById(req.params.userId)
     .then((foundUser) => {
       res.json(foundUser);
@@ -82,21 +94,11 @@ router.put("/:mealId", isLoggedIn, (req, res) => {
 router.put("/:mealId/unreserve", isLoggedIn, (req, res) => {
   const accessToken = req.body.token;
   const mealId = req.params.mealId;
-  console.log("1*******");
   Session.findById(accessToken)
     .then((data) => {
-      console.log("2*******");
       const currentUser = data.user;
       Meal.findById(mealId).then((foundMeal) => {
-        console.log("3*******");
-        console.log(
-          "CURRENT USER: ",
-          currentUser,
-          "FOUND MEAL RESERVED: ",
-          foundMeal.reservedBy
-        );
         if (currentUser.toString() !== foundMeal.reservedBy.toString()) {
-          console.log("4*******");
           return res
             .status(500)
             .json({ errorMessage: "You do not own this meal" });
@@ -109,7 +111,6 @@ router.put("/:mealId/unreserve", isLoggedIn, (req, res) => {
           },
           { new: true }
         ).then((newMeal) => {
-          console.log("5*******");
           res.json({
             newMeal,
             success: true,
@@ -118,10 +119,98 @@ router.put("/:mealId/unreserve", isLoggedIn, (req, res) => {
       });
     })
     .catch((err) => {
-      console.log("6******");
       console.error(err);
       res.status(500).json({ errorMessage: err.message });
     });
+});
+
+//UNRESERVES A MEAL FROM THE RESTAURANT SIDE
+router.put("/:mealId/unreserve/restaurant", isLoggedIn, (req, res) => {
+  const accessToken = req.body.token;
+  const currentOwner = req.body.currentOwner;
+  const mealId = req.params.mealId;
+  Session.findById(accessToken)
+    .then((data) => {
+      const currentUser = data.user;
+      if (currentOwner.toString() !== currentUser._id.toString()) {
+        return res
+          .status(500)
+          .json({ errorMessage: "You do not own this restaurant" });
+      }
+      Meal.findByIdAndUpdate(
+        mealId,
+        {
+          reserved: false,
+          reservedBy: null,
+        },
+        { new: true }
+      ).then((newMeal) => {
+        res.json({ newMeal, success: true });
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ errorMessage: err.message });
+    });
+});
+
+//COMPLETES THE ORDER
+router.put("/:mealId/complete", isLoggedIn, (req, res) => {
+  const accessToken = req.body.token;
+  const currentOwner = req.body.currentOwner;
+  const mealId = req.params.mealId;
+  const customerId = req.body.customerId;
+  const currentRestaurant = req.body.currentRestaurant;
+  Session.findById(accessToken).then((data) => {
+    const currentUser = data.user;
+    if (currentOwner.toString() !== currentUser._id.toString()) {
+      return res
+        .status(500)
+        .json({ errorMessage: "You do not own this restaurant" });
+    }
+    Meal.findByIdAndUpdate(
+      mealId,
+      {
+        orderCompleted: true,
+      },
+      { new: true }
+    )
+      .then((newMeal) => {
+        //ADD MEAL TO RESTAURANT COMPELTE ORDERS
+        //REMOVE MEAL FROM RESTAURANT MEALS
+        //ADD TO CUSTOMER COMPLETED HISTORY
+        //REMOVE MEAL FROM CUSTOMER HISTORY (NOT COMPLETED)
+        Restaurant.findByIdAndUpdate(
+          currentRestaurant,
+          {
+            $addToSet: { completedOrders: mealId },
+            $pull: {
+              meals: { $in: [mealId] },
+            },
+          },
+          { new: true }
+        )
+          .populate("completedOrders")
+          .then((newRestaurant) => {
+            User.findByIdAndUpdate(
+              customerId,
+              {
+                $addToSet: { completedHistory: mealId },
+                $pull: {
+                  history: { $in: [mealId] },
+                },
+              },
+              { new: true }
+            ).then((newUser) => {
+              res.json({ newMeal, newRestaurant, newUser, success: true });
+            });
+          });
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).json({ errorMessage: err.message });
+      });
+  });
 });
 
 module.exports = router;

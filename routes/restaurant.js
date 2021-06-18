@@ -3,6 +3,7 @@ const Meal = require("../models/Meal.model");
 const Restaurant = require("../models/Restaurant.model");
 const isLoggedIn = require("../middleware/isLoggedIn");
 const Session = require("../models/Session.model");
+const upload = require("../middleware/cloudinary");
 
 //SHOWS ALL RESTAURANTS
 router.get("/", (req, res) => {
@@ -15,6 +16,7 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
   Restaurant.findOne({ restaurantName: req.params.id })
     .populate("meals")
+    .populate("completedOrders")
     .then((restaurant) => {
       res.json(restaurant);
     });
@@ -94,6 +96,41 @@ router.put("/:restaurantId", isLoggedIn, (req, res) => {
       res.status(500).json({ errorMessage: err.message });
     });
 });
+
+//UPDATES RESTAURANT IMAGE
+router.put(
+  "/:restaurantId/image",
+  isLoggedIn,
+  upload.single("image"),
+  (req, res) => {
+    const image = req.file.path;
+    const restaurantId = req.params.restaurantId;
+    const accessToken = req.headers.authorization;
+    Session.findById(accessToken)
+      .then((data) => {
+        const currentUser = data.user;
+        Restaurant.findById(restaurantId).then((foundRestaurant) => {
+          if (foundRestaurant.owner.toString() === currentUser.toString()) {
+            Restaurant.findByIdAndUpdate(
+              restaurantId,
+              { image: image },
+              { new: true }
+            )
+              .then((updatedRestaurant) => {
+                res.json({ updatedRestaurant, success: true });
+              })
+              .catch((err) => {
+                console.error(err);
+              });
+          }
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).json({ errorMessage: err.message });
+      });
+  }
+);
 
 //DELETE A MEAL FROM THE RESTAURANT PAGE
 router.delete("/:restaurantId/meal/:mealId", isLoggedIn, (req, res) => {

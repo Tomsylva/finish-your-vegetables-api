@@ -6,6 +6,18 @@ const isLoggedIn = require("../middleware/isLoggedIn");
 const upload = require("../middleware/cloudinary");
 const Meal = require("../models/Meal.model");
 
+router.get("/:userId/populate", (req, res) => {
+  User.findById(req.params.userId)
+    .populate("history")
+    .populate("completedHistory")
+    .then((foundUser) => {
+      res.json({ foundUser: foundUser });
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+});
+
 router.put("/update", isLoggedIn, upload.single("userImage"), (req, res) => {
   const { username, userId } = req.body;
   const userImage = req.file.path;
