@@ -7,9 +7,11 @@ const upload = require("../middleware/cloudinary");
 
 //SHOWS ALL RESTAURANTS
 router.get("/", (req, res) => {
-  Restaurant.find({}).then((allRestaurants) => {
-    res.json(allRestaurants);
-  });
+  Restaurant.find({})
+    .populate("meals")
+    .then((allRestaurants) => {
+      res.json(allRestaurants);
+    });
 });
 
 //SHOWS THE SINGLE RESTAURANT SELECTED
