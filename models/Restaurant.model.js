@@ -13,7 +13,7 @@ const restaurantSchema = new Schema({
   image: {
     type: String,
     default:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSA5Cf20HBBaTzJgCw3uNCXpFLc4ujI_tIghw&usqp=CAU",
+      "https://res.cloudinary.com/tom-j-sylva/image/upload/v1624624238/finish-your-vegetables/FYV_klmsqc.png",
   },
   meals: [{ type: Schema.Types.ObjectId, ref: "Meal" }],
   contact: {

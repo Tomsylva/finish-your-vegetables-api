@@ -18,7 +18,7 @@ const userSchema = new Schema(
     userImage: {
       type: String,
       default:
-        "https://www.alimentarium.org/en/system/files/thumbnails/image/AL012-02%20carotte.jpg",
+        "https://res.cloudinary.com/tom-j-sylva/image/upload/v1624624238/finish-your-vegetables/FYV_klmsqc.png",
     },
   },
   {
