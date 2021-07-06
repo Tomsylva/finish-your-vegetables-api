@@ -60,7 +60,6 @@ router.delete("/delete", isLoggedIn, (req, res) => {
           });
         });
       });
-      /*res.status(200).json({ message: "User was logged out" });*/
     })
     .catch((err) => {
       console.error(err);

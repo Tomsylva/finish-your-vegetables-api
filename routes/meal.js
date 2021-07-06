@@ -176,10 +176,6 @@ router.put("/:mealId/complete", isLoggedIn, (req, res) => {
       { new: true }
     )
       .then((newMeal) => {
-        //ADD MEAL TO RESTAURANT COMPELTE ORDERS
-        //REMOVE MEAL FROM RESTAURANT MEALS
-        //ADD TO CUSTOMER COMPLETED HISTORY
-        //REMOVE MEAL FROM CUSTOMER HISTORY (NOT COMPLETED)
         Restaurant.findByIdAndUpdate(
           currentRestaurant,
           {
