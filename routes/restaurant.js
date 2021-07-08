@@ -51,19 +51,16 @@ router.post("/meal", isLoggedIn, (req, res) => {
               $push: { meals: response._id },
             }).catch((err) => {
               res.status(400).json({ err });
-              console.error(err);
             });
             res.json(response);
           })
           .catch((err) => {
             res.status(400).json({ err });
-            console.error(err);
           });
       }
     })
     .catch((err) => {
       res.status(500).json({ err });
-      console.error(err);
     });
 });
 
@@ -94,7 +91,6 @@ router.put("/:restaurantId", isLoggedIn, (req, res) => {
       });
     })
     .catch((err) => {
-      console.error(err);
       res.status(500).json({ errorMessage: err.message });
     });
 });
@@ -128,7 +124,6 @@ router.put(
         });
       })
       .catch((err) => {
-        console.error(err);
         res.status(500).json({ errorMessage: err.message });
       });
   }
@@ -152,7 +147,6 @@ router.delete("/:restaurantId/meal/:mealId", isLoggedIn, (req, res) => {
             res.json({ success: true });
           })
           .catch((err) => {
-            console.error(err);
             res.status(500).json({ errorMessage: err.message });
           });
       }
@@ -177,11 +171,10 @@ router.delete("/:restaurantId/delete", isLoggedIn, (req, res) => {
               console.error(err);
             });
         }
-        console.log("YOU FAILED");
       });
     })
     .catch((err) => {
-      console.error(err);
+      res.status(500).json({ errorMessage: err.message });
     });
 });
 

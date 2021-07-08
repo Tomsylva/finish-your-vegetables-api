@@ -12,7 +12,7 @@ router.get("/showAll", (req, res) => {
       res.json(allMeals);
     })
     .catch((err) => {
-      console.error(err);
+      res.status(500).json({ errorMessage: err.message });
     });
 });
 
@@ -24,7 +24,7 @@ router.get("/:mealId", (req, res) => {
       res.json(foundMeal);
     })
     .catch((err) => {
-      console.error(err);
+      res.status(500).json({ errorMessage: err.message });
     });
 });
 
@@ -35,7 +35,7 @@ router.get("/:userId/collect", (req, res) => {
       res.json(foundUser);
     })
     .catch((err) => {
-      console.error(err);
+      res.status(500).json({ errorMessage: err.message });
     });
 });
 
@@ -46,7 +46,7 @@ router.get("/:userId/completed", (req, res) => {
       res.json(foundUser);
     })
     .catch((err) => {
-      console.error(err);
+      res.status(500).json({ errorMessage: err.message });
     });
 });
 
@@ -85,7 +85,6 @@ router.put("/:mealId", isLoggedIn, (req, res) => {
         });
     })
     .catch((err) => {
-      console.error(err);
       res.status(500).json({ errorMessage: err.message });
     });
 });
@@ -119,7 +118,6 @@ router.put("/:mealId/unreserve", isLoggedIn, (req, res) => {
       });
     })
     .catch((err) => {
-      console.error(err);
       res.status(500).json({ errorMessage: err.message });
     });
 });
@@ -149,7 +147,6 @@ router.put("/:mealId/unreserve/restaurant", isLoggedIn, (req, res) => {
       });
     })
     .catch((err) => {
-      console.error(err);
       res.status(500).json({ errorMessage: err.message });
     });
 });
@@ -203,7 +200,6 @@ router.put("/:mealId/complete", isLoggedIn, (req, res) => {
           });
       })
       .catch((err) => {
-        console.error(err);
         res.status(500).json({ errorMessage: err.message });
       });
   });

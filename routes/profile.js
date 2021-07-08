@@ -14,7 +14,7 @@ router.get("/:userId/populate", (req, res) => {
       res.json({ foundUser: foundUser });
     })
     .catch((err) => {
-      console.error(err);
+      res.status(500).json({ errorMessage: err.message });
     });
 });
 
@@ -27,7 +27,7 @@ router.put("/update", isLoggedIn, upload.single("userImage"), (req, res) => {
       res.json({ user: newUser });
     })
     .catch((err) => {
-      console.log(err);
+      res.status(500).json({ errorMessage: err.message });
     });
 });
 
@@ -46,7 +46,7 @@ router.post("/add-restaurant", isLoggedIn, (req, res) => {
       res.json(response);
     })
     .catch((err) => {
-      console.error(err);
+      res.status(500).json({ errorMessage: err.message });
     });
 });
 
@@ -62,7 +62,6 @@ router.delete("/delete", isLoggedIn, (req, res) => {
       });
     })
     .catch((err) => {
-      console.error(err);
       res.status(500).json({ errorMessage: err.message });
     });
 });
