@@ -168,6 +168,7 @@ router.delete("/:restaurantId/delete", isLoggedIn, (req, res) => {
               res.json({ success: true });
             })
             .catch((err) => {
+              // MAYBE send an error message to the frontend to display????
               console.error(err);
             });
         }
